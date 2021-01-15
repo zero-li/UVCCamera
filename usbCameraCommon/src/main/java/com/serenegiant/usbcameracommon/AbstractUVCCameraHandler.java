@@ -89,6 +89,7 @@ abstract class AbstractUVCCameraHandler extends Handler {
 	private static final int MSG_CAPTURE_STOP = 6;
 	private static final int MSG_MEDIA_UPDATE = 7;
 	private static final int MSG_RELEASE = 9;
+	private static final int MSG_CAMERA_FOCUS = 10;
 
 	private final WeakReference<AbstractUVCCameraHandler.CameraThread> mWeakThread;
 	private volatile boolean mReleased;
@@ -212,6 +213,10 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		sendEmptyMessage(MSG_CAPTURE_STOP);
 	}
 
+	public void startCameraFocus() {
+		sendEmptyMessage(MSG_CAMERA_FOCUS);
+	}
+
 	public List<Size> getSupportedPreviewSizes() {
 		return mWeakThread.get().getSupportedSizes();
 	}
@@ -328,6 +333,9 @@ abstract class AbstractUVCCameraHandler extends Handler {
 			break;
 		case MSG_RELEASE:
 			thread.handleRelease();
+			break;
+		case MSG_CAMERA_FOCUS:
+			thread.handleCameraFocus();
 			break;
 		default:
 			throw new RuntimeException("unsupported message:what=" + msg.what);
@@ -659,6 +667,21 @@ abstract class AbstractUVCCameraHandler extends Handler {
 			if ((mUVCCamera == null) || !mIsPreviewing)
 				return null;
 			return mUVCCamera.getSupportedSizeList();
+		}
+
+		public void handleCameraFocus() {
+			if (DEBUG) Log.v(TAG_THREAD, "handleStartPreview:");
+			if ((mUVCCamera == null) || !mIsPreviewing)
+				return;
+			try {
+				mUVCCamera.setAutoFocus(false);
+				sleep(100);
+				mUVCCamera.setFocus(0);
+				sleep(100);
+				mUVCCamera.setAutoFocus(true);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 
 		private final MediaEncoder.MediaEncoderListener mMediaEncoderListener = new MediaEncoder.MediaEncoderListener() {
