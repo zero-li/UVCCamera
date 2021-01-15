@@ -31,10 +31,10 @@ android {
 		sourceCompatibility javaSourceCompatibility
 		targetCompatibility javaTargetCompatibility
 	}
-	
+
     defaultConfig {
         applicationId "com.serenegiant.usbcameratest7"
-        minSdkVersion 18
+        minSdkVersion 23
 		targetSdkVersion versionTarget
 		versionCode 9
 		versionName "3.00"

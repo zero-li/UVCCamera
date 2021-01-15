@@ -218,10 +218,8 @@ public class BaseActivity extends AppCompatActivity
 	public void onMessageDialogResult(final MessageDialogFragmentV4 dialog, final int requestCode, final String[] permissions, final boolean result) {
 		if (result) {
 			// 在消息对话框中按“确定”时，请求权限
-			if (BuildCheck.isMarshmallow()) {
-				requestPermissions(permissions, requestCode);
-				return;
-			}
+			requestPermissions(permissions, requestCode);
+			return;
 		}
 		// 如果在消息对话框中取消了它，并且不是Android 6，则请自己检查并调用#checkPermissionResult
 		for (final String permission: permissions) {

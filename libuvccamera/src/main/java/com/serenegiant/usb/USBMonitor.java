@@ -43,6 +43,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -656,13 +657,11 @@ public final class USBMonitor {
 		if (!TextUtils.isEmpty(serial)) {
 			sb.append("#");	sb.append(serial);
 		}
-		if (useNewAPI && BuildCheck.isAndroid5()) {
+		if (useNewAPI) {
 			sb.append("#");
 			sb.append(device.getManufacturerName());	sb.append("#");	// API >= 21
 			sb.append(device.getConfigurationCount());	sb.append("#");	// API >= 21
-			if (BuildCheck.isMarshmallow()) {
-				sb.append(device.getVersion());			sb.append("#");	// API >= 23
-			}
+			sb.append(device.getVersion());				sb.append("#");	// API >= 23
 		}
 //		if (DEBUG) Log.v(TAG, "getDeviceKeyName:" + sb.toString());
 		return sb.toString();
@@ -882,14 +881,10 @@ public final class USBMonitor {
 		info.clear();
 
 		if (device != null) {
-			if (BuildCheck.isLollipop()) {
-				info.manufacturer = device.getManufacturerName();
-				info.product = device.getProductName();
-				info.serial = device.getSerialNumber();
-			}
-			if (BuildCheck.isMarshmallow()) {
-				info.usb_version = device.getVersion();
-			}
+			info.manufacturer = device.getManufacturerName();
+			info.product = device.getProductName();
+			info.serial = device.getSerialNumber();
+			info.usb_version = device.getVersion();
 			if ((manager != null) && manager.hasPermission(device)) {
 				final UsbDeviceConnection connection = manager.openDevice(device);
 				final byte[] desc = connection.getRawDescriptors();
