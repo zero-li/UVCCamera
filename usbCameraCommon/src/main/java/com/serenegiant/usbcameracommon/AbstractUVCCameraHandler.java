@@ -47,6 +47,7 @@ import com.serenegiant.encoder.MediaSurfaceEncoder;
 import com.serenegiant.encoder.MediaVideoBufferEncoder;
 import com.serenegiant.encoder.MediaVideoEncoder;
 import com.serenegiant.usb.IFrameCallback;
+import com.serenegiant.usb.Size;
 import com.serenegiant.usb.USBMonitor;
 import com.serenegiant.usb.UVCCamera;
 import com.serenegiant.widget.CameraViewInterface;
@@ -61,6 +62,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -208,6 +210,10 @@ abstract class AbstractUVCCameraHandler extends Handler {
 
 	public void stopRecording() {
 		sendEmptyMessage(MSG_CAPTURE_STOP);
+	}
+
+	public List<Size> getSupportedPreviewSizes() {
+		return mWeakThread.get().getSupportedSizes();
 	}
 
 	public void release() {
@@ -647,6 +653,12 @@ abstract class AbstractUVCCameraHandler extends Handler {
 				Looper.myLooper().quit();
 			}
 			if (DEBUG) Log.v(TAG_THREAD, "handleRelease:finished");
+		}
+
+		public List<Size> getSupportedSizes() {
+			if ((mUVCCamera == null) || !mIsPreviewing)
+				return null;
+			return mUVCCamera.getSupportedSizeList();
 		}
 
 		private final MediaEncoder.MediaEncoderListener mMediaEncoderListener = new MediaEncoder.MediaEncoderListener() {
