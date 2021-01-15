@@ -74,7 +74,7 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		public void onStartPreview();
 		public void onStopPreview();
 		public void onStartRecording();
-		public void onStopRecording();
+		public void onStopRecording(String path);
 		public void onError(final Exception e);
 	}
 
@@ -595,10 +595,11 @@ abstract class AbstractUVCCameraHandler extends Handler {
 				// ignore
 			}
 			if (muxer != null) {
+				String outputPath = muxer.getOutputPath();
 				muxer.stopRecording();
 				mUVCCamera.setFrameCallback(null, 0);
 				// you should not wait here
-				callOnStopRecording();
+				callOnStopRecording(outputPath);
 			}
 		}
 
@@ -815,10 +816,10 @@ abstract class AbstractUVCCameraHandler extends Handler {
 			}
 		}
 
-		private void callOnStopRecording() {
+		private void callOnStopRecording(String outputPath) {
 			for (final CameraCallback callback: mCallbacks) {
 				try {
-					callback.onStopRecording();
+					callback.onStopRecording(outputPath);
 				} catch (final Exception e) {
 					mCallbacks.remove(callback);
 					Log.w(TAG, e);
