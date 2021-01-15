@@ -2920,6 +2920,9 @@ static int handle_iso_completion(struct libusb_device_handle *handle,	// XXX add
 
 	usbi_mutex_lock(&itransfer->lock);
 	for (i = 0; i < num_urbs; i++) {
+		if (tpriv->iso_urbs == NULL) {
+			return LIBUSB_TRANSFER_ERROR;
+		}
 		if (urb == tpriv->iso_urbs[i]) {
 			urb_idx = i + 1;
 			break;
@@ -3122,6 +3125,11 @@ static int reap_for_handle(struct libusb_device_handle *handle) {
 	transfer = USBI_TRANSFER_TO_LIBUSB_TRANSFER(itransfer);
 
 	usbi_dbg("urb type=%d status=%d transferred=%d", urb->type, urb->status, urb->actual_length);
+
+	// current error status is -108
+	if (urb->status == -180) {
+	    return LIBUSB_ERROR_OTHER;
+	}
 
 	switch (transfer->type) {
         case LIBUSB_TRANSFER_TYPE_ISOCHRONOUS: // 同步端点
