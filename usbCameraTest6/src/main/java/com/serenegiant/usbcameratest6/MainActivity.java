@@ -111,6 +111,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	protected void onStart() {
 		super.onStart();
 		if (DEBUG) Log.v(TAG, "onStart:");
+		checkPermissionCamera();
 		synchronized (mSync) {
 			mUSBMonitor.register();
 		}

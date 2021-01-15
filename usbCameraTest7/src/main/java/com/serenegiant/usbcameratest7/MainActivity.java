@@ -97,6 +97,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	@Override
 	protected void onStart() {
 		super.onStart();
+		checkPermissionCamera();
 		mUSBMonitor.register();
 		if (mUVCCameraViewR != null)
 			mUVCCameraViewR.onResume();
