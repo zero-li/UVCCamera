@@ -23,6 +23,7 @@
 
 package com.serenegiant.service;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -202,7 +203,8 @@ public final class CameraServer extends Handler {
 
 	public void captureStill(final String path) {
 		if (mRendererHolder != null) {
-			mRendererHolder.captureStill(path);
+			try { mRendererHolder.captureStill(path); }
+			catch (FileNotFoundException e) { e.printStackTrace(); }
 			sendMessage(obtainMessage(MSG_CAPTURE_STILL, path));
 		}
 	}
