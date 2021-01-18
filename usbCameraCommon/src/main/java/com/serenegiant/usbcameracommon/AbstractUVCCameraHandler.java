@@ -204,9 +204,10 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		sendMessage(obtainMessage(MSG_CAPTURE_STILL, path));
 	}
 
-	public void startRecording() {
+	public void startRecording() { startRecording(true); }
+	public void startRecording(boolean recordAudio) {
 		checkReleased();
-		sendEmptyMessage(MSG_CAPTURE_START);
+		sendMessage(obtainMessage(MSG_CAPTURE_START, recordAudio));
 	}
 
 	public void stopRecording() {
@@ -323,7 +324,7 @@ abstract class AbstractUVCCameraHandler extends Handler {
 			thread.handleCaptureStill((String)msg.obj);
 			break;
 		case MSG_CAPTURE_START:
-			thread.handleStartRecording();
+			thread.handleStartRecording((boolean)msg.obj);
 			break;
 		case MSG_CAPTURE_STOP:
 			thread.handleStopRecording();
@@ -554,7 +555,7 @@ abstract class AbstractUVCCameraHandler extends Handler {
 			}
 		}
 
-		public void handleStartRecording() {
+		public void handleStartRecording(boolean recordAudio) {
 			if (DEBUG) Log.v(TAG_THREAD, "handleStartRecording:");
 			try {
 				if ((mUVCCamera == null) || (mMuxer != null)) return;
@@ -572,7 +573,7 @@ abstract class AbstractUVCCameraHandler extends Handler {
 					new MediaSurfaceEncoder(muxer, getWidth(), getHeight(), mMediaEncoderListener);
 					break;
 				}
-				if (true) {
+				if (recordAudio) {
 					// for audio capturing
 					new MediaAudioEncoder(muxer, mMediaEncoderListener);
 				}
