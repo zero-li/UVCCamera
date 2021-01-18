@@ -38,12 +38,12 @@ import android.widget.ToggleButton;
 
 import com.serenegiant.common.BaseActivity;
 
-import com.serenegiant.usb.CameraDialog;
+import com.serenegiant.usb_libuvccamera.CameraDialog;
 import com.serenegiant.usbcameracommon.UVCCameraHandler;
-import com.serenegiant.usb.USBMonitor;
-import com.serenegiant.usb.USBMonitor.OnDeviceConnectListener;
-import com.serenegiant.usb.USBMonitor.UsbControlBlock;
-import com.serenegiant.usb.UVCCamera;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor.OnDeviceConnectListener;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor.UsbControlBlock;
+import com.serenegiant.usb_libuvccamera.UVCCamera;
 import com.serenegiant.widget.CameraViewInterface;
 
 public final class MainActivity extends BaseActivity implements CameraDialog.CameraDialogParent {
@@ -81,7 +81,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	/**
 	 * for accessing USB
 	 */
-	private USBMonitor mUSBMonitor;
+	private LibUVCCameraUSBMonitor mUSBMonitor;
 	/**
 	 * Handler to execute camera related methods sequentially on private thread
 	 */
@@ -115,9 +115,8 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 		final View view = findViewById(R.id.camera_view);
 		view.setOnLongClickListener(mOnLongClickListener);
 		mUVCCameraView = (CameraViewInterface)view;
-		mUVCCameraView.setAspectRatio(PREVIEW_WIDTH / (float)PREVIEW_HEIGHT);
 
-		mUSBMonitor = new USBMonitor(this, mOnDeviceConnectListener);
+		mUSBMonitor = new LibUVCCameraUSBMonitor(this, mOnDeviceConnectListener);
 		mCameraHandler = UVCCameraHandler.createHandler(this, mUVCCameraView,
 			USE_SURFACE_ENCODER ? 0 : 1, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_MODE);
 	}
@@ -291,7 +290,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	 * @return
 	 */
 	@Override
-	public USBMonitor getUSBMonitor() {
+	public LibUVCCameraUSBMonitor getUSBMonitor() {
 		return mUSBMonitor;
 	}
 

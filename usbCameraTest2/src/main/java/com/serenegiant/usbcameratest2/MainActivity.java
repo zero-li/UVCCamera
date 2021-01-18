@@ -47,11 +47,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.serenegiant.common.BaseActivity;
-import com.serenegiant.usb.CameraDialog;
-import com.serenegiant.usb.USBMonitor;
-import com.serenegiant.usb.USBMonitor.OnDeviceConnectListener;
-import com.serenegiant.usb.USBMonitor.UsbControlBlock;
-import com.serenegiant.usb.UVCCamera;
+import com.serenegiant.usb_libuvccamera.CameraDialog;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor.OnDeviceConnectListener;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor.UsbControlBlock;
+import com.serenegiant.usb_libuvccamera.UVCCamera;
 import com.serenegiant.video.Encoder;
 import com.serenegiant.video.Encoder.EncodeListener;
 import com.serenegiant.video.SurfaceEncoder;
@@ -67,7 +67,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 	private final Object mSync = new Object();
     // for accessing USB and USB camera
-    private USBMonitor mUSBMonitor;
+    private LibUVCCameraUSBMonitor mUSBMonitor;
 	private UVCCamera mUVCCamera;
 	private SimpleUVCCameraTextureView mUVCCameraView;
 	// for open&start / stop&close camera preview
@@ -94,7 +94,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 		mUVCCameraView.setAspectRatio(UVCCamera.DEFAULT_PREVIEW_WIDTH / (float)UVCCamera.DEFAULT_PREVIEW_HEIGHT);
 		mUVCCameraView.setSurfaceTextureListener(mSurfaceTextureListener);
 
-		mUSBMonitor = new USBMonitor(this, mOnDeviceConnectListener);
+		mUSBMonitor = new LibUVCCameraUSBMonitor(this, mOnDeviceConnectListener);
 	}
 
 	@Override
@@ -254,7 +254,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	 * @return
 	 */
 	@Override
-	public USBMonitor getUSBMonitor() {
+	public LibUVCCameraUSBMonitor getUSBMonitor() {
 		return mUSBMonitor;
 	}
 

@@ -37,7 +37,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.serenegiant.dialog.MessageDialogFragmentV4;
-import com.serenegiant.utils.BuildCheck;
 import com.serenegiant.utils.HandlerThreadHandler;
 import com.serenegiant.utils.PermissionCheck;
 

@@ -46,10 +46,10 @@ import com.serenegiant.encoder.MediaMuxerWrapper;
 import com.serenegiant.encoder.MediaSurfaceEncoder;
 import com.serenegiant.encoder.MediaVideoBufferEncoder;
 import com.serenegiant.encoder.MediaVideoEncoder;
-import com.serenegiant.usb.IFrameCallback;
-import com.serenegiant.usb.Size;
-import com.serenegiant.usb.USBMonitor;
-import com.serenegiant.usb.UVCCamera;
+import com.serenegiant.usb_libuvccamera.IFrameCallback;
+import com.serenegiant.usb_libuvccamera.Size;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor;
+import com.serenegiant.usb_libuvccamera.UVCCamera;
 import com.serenegiant.widget.CameraViewInterface;
 
 import java.io.BufferedOutputStream;
@@ -61,7 +61,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -144,7 +143,7 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		}
 	}
 
-	public void open(final USBMonitor.UsbControlBlock ctrlBlock) {
+	public void open(final LibUVCCameraUSBMonitor.UsbControlBlock ctrlBlock) {
 		checkReleased();
 		sendMessage(obtainMessage(MSG_OPEN, ctrlBlock));
 	}
@@ -309,7 +308,7 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		if (thread == null) return;
 		switch (msg.what) {
 		case MSG_OPEN:
-			thread.handleOpen((USBMonitor.UsbControlBlock)msg.obj);
+			thread.handleOpen((LibUVCCameraUSBMonitor.UsbControlBlock)msg.obj);
 			break;
 		case MSG_CLOSE:
 			thread.handleClose();
@@ -451,7 +450,7 @@ abstract class AbstractUVCCameraHandler extends Handler {
 			return (mUVCCamera != null) && (mUVCCamera.getDevice() != null) && mUVCCamera.getDevice().equals(device);
 		}
 
-		public void handleOpen(final USBMonitor.UsbControlBlock ctrlBlock) {
+		public void handleOpen(final LibUVCCameraUSBMonitor.UsbControlBlock ctrlBlock) {
 			if (DEBUG) Log.v(TAG_THREAD, "handleOpen:");
 			handleClose();
 			try {

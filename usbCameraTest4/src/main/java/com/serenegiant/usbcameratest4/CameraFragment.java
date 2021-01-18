@@ -49,11 +49,11 @@ import com.serenegiant.serviceclient.CameraClient;
 import com.serenegiant.serviceclient.ICameraClient;
 import com.serenegiant.serviceclient.ICameraClientCallback;
 
-import com.serenegiant.usb.CameraDialog;
-import com.serenegiant.usb.DeviceFilter;
-import com.serenegiant.usb.USBMonitor;
-import com.serenegiant.usb.USBMonitor.OnDeviceConnectListener;
-import com.serenegiant.usb.USBMonitor.UsbControlBlock;
+import com.serenegiant.usb_libuvccamera.CameraDialog;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraDeviceFilter;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor.OnDeviceConnectListener;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor.UsbControlBlock;
 import com.serenegiant.widget.CameraViewInterface;
 
 public class CameraFragment extends BaseFragment {
@@ -64,7 +64,7 @@ public class CameraFragment extends BaseFragment {
 	private static final int DEFAULT_WIDTH = 640;
 	private static final int DEFAULT_HEIGHT = 480;
 
-	private USBMonitor mUSBMonitor;
+	private LibUVCCameraUSBMonitor mUSBMonitor;
 	private ICameraClient mCameraClient;
 
 	private ToggleButton mPreviewButton;
@@ -91,8 +91,8 @@ public class CameraFragment extends BaseFragment {
 		super.onCreate(savedInstanceState);
 		if (DEBUG) Log.v(TAG, "onCreate:");
 		if (mUSBMonitor == null) {
-			mUSBMonitor = new USBMonitor(getActivity().getApplicationContext(), mOnDeviceConnectListener);
-			final List<DeviceFilter> filters = DeviceFilter.getDeviceFilters(getActivity(), R.xml.device_filter);
+			mUSBMonitor = new LibUVCCameraUSBMonitor(getActivity().getApplicationContext(), mOnDeviceConnectListener);
+			final List<LibUVCCameraDeviceFilter> filters = LibUVCCameraDeviceFilter.getDeviceFilters(getActivity(), R.xml.device_filter);
 			mUSBMonitor.setDeviceFilter(filters);
 		}
 	}
@@ -115,7 +115,6 @@ public class CameraFragment extends BaseFragment {
 		mStillCaptureButton.setOnClickListener(mOnClickListener);
 		mStillCaptureButton.setEnabled(false);
 		mCameraView = (CameraViewInterface)rootView.findViewById(R.id.camera_view);
-		mCameraView.setAspectRatio(DEFAULT_WIDTH / (float)DEFAULT_HEIGHT);
 		mCameraViewSub = (SurfaceView)rootView.findViewById(R.id.camera_view_sub);
 		mCameraViewSub.setOnClickListener(mOnClickListener);
 		return rootView;
@@ -163,7 +162,7 @@ public class CameraFragment extends BaseFragment {
 		super.onDetach();
 	}
 
-	public USBMonitor getUSBMonitor() {
+	public LibUVCCameraUSBMonitor getUSBMonitor() {
 		return mUSBMonitor;
 	}
 

@@ -39,7 +39,7 @@ import com.serenegiant.encoder.MediaEncoder;
 import com.serenegiant.encoder.MediaVideoEncoder;
 import com.serenegiant.glutils.EGLBase;
 import com.serenegiant.glutils.GLDrawer2D;
-import com.serenegiant.glutils.es1.GLHelper;
+import com.serenegiant.glutils.GLHelper;
 import com.serenegiant.utils.FpsCounter;
 
 /**
@@ -423,7 +423,7 @@ public class UVCCameraTextureView extends AspectRatioTextureView    // API >= 14
 			public final void setEncoder(final MediaEncoder encoder) {
 				if (DEBUG) Log.v(TAG, "RenderThread#setEncoder:encoder=" + encoder);
 				if (encoder != null && (encoder instanceof MediaVideoEncoder)) {
-					((MediaVideoEncoder)encoder).setEglContext(mEglSurface.getContext(), mTexId);
+					((MediaVideoEncoder)encoder).setEglContext(mEgl.getContext(), mTexId);
 				}
 				mEncoder = encoder;
 			}

@@ -24,7 +24,6 @@
 package com.serenegiant.common;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -32,11 +31,12 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.fragment.app.FragmentActivity;
+
 import android.util.Log;
 import android.widget.Toast;
 
-import com.serenegiant.dialog.MessageDialogFragment;
-import com.serenegiant.utils.BuildCheck;
+import com.serenegiant.dialog.MessageDialogFragmentV4;
 import com.serenegiant.utils.HandlerThreadHandler;
 import com.serenegiant.utils.PermissionCheck;
 
@@ -45,7 +45,7 @@ import com.serenegiant.utils.PermissionCheck;
  *
  */
 public class BaseFragment extends Fragment
-	implements MessageDialogFragment.MessageDialogListener {
+	implements MessageDialogFragmentV4.MessageDialogListener {
 
 	private static boolean DEBUG = false;	// FIXME 在生产期间设置为false
 	private static final String TAG = BaseFragment.class.getSimpleName();
@@ -184,6 +184,10 @@ public class BaseFragment extends Fragment
 	}
 
 	private ShowToastTask mShowToastTask;
+
+	@Override
+	public void onMessageDialogResult(@NonNull MessageDialogFragmentV4 messageDialogFragmentV4, int i, @NonNull String[] strings, boolean b) {}
+
 	private final class ShowToastTask implements Runnable {
 		final int msg;
 		final Object args;
@@ -213,26 +217,7 @@ public class BaseFragment extends Fragment
 	}
 
 //================================================================================
-	/**
-	 * MessageDialogFragment消息对话框中的回调侦听器
-	 * @param dialog
-	 * @param requestCode
-	 * @param permissions
-	 * @param result
-	 */
-	@SuppressLint("NewApi")
-	@Override
-	public void onMessageDialogResult(final MessageDialogFragment dialog, final int requestCode, final String[] permissions, final boolean result) {
-		if (result) {
-			// 在消息对话框中按“确定”时，请求权限
-			requestPermissions(permissions, requestCode);
-			return;
-		}
-		// 如果在消息对话框中取消了它，并且不是Android 6，则请自己检查并调用#checkPermissionResult
-		for (final String permission: permissions) {
-			checkPermissionResult(requestCode, permission, PermissionCheck.hasPermission(getActivity(), permission));
-		}
-	}
+
 
 	/**
 	 * 接收许可请求结果的方法
@@ -284,7 +269,7 @@ public class BaseFragment extends Fragment
 	 */
 	protected boolean checkPermissionWriteExternalStorage() {
 		if (!PermissionCheck.hasWriteExternalStorage(getActivity())) {
-			MessageDialogFragment.showDialog(this, REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE,
+			MessageDialogFragmentV4.showDialog((FragmentActivity) getActivity(), REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE,
 				com.serenegiant.common.R.string.permission_title, com.serenegiant.common.R.string.permission_ext_storage_request,
 				new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
 			return false;
@@ -299,7 +284,7 @@ public class BaseFragment extends Fragment
 	 */
 	protected boolean checkPermissionAudio() {
 		if (!PermissionCheck.hasAudio(getActivity())) {
-			MessageDialogFragment.showDialog(this, REQUEST_PERMISSION_AUDIO_RECORDING,
+			MessageDialogFragmentV4.showDialog((FragmentActivity) getActivity(), REQUEST_PERMISSION_AUDIO_RECORDING,
 				com.serenegiant.common.R.string.permission_title, com.serenegiant.common.R.string.permission_audio_recording_request,
 				new String[]{Manifest.permission.RECORD_AUDIO});
 			return false;
@@ -314,7 +299,7 @@ public class BaseFragment extends Fragment
 	 */
 	protected boolean checkPermissionNetwork() {
 		if (!PermissionCheck.hasNetwork(getActivity())) {
-			MessageDialogFragment.showDialog(this, REQUEST_PERMISSION_NETWORK,
+			MessageDialogFragmentV4.showDialog((FragmentActivity) getActivity(), REQUEST_PERMISSION_NETWORK,
 				com.serenegiant.common.R.string.permission_title, com.serenegiant.common.R.string.permission_network_request,
 				new String[]{Manifest.permission.INTERNET});
 			return false;
@@ -329,7 +314,7 @@ public class BaseFragment extends Fragment
 	 */
 	protected boolean checkPermissionCamera() {
 		if (!PermissionCheck.hasCamera(getActivity())) {
-			MessageDialogFragment.showDialog(this, REQUEST_PERMISSION_CAMERA,
+			MessageDialogFragmentV4.showDialog((FragmentActivity) getActivity(), REQUEST_PERMISSION_CAMERA,
 				com.serenegiant.common.R.string.permission_title, com.serenegiant.common.R.string.permission_camera_request,
 				new String[]{Manifest.permission.CAMERA});
 			return false;

@@ -21,7 +21,7 @@
  *  may have a different license, see the respective files.
  */
 
-package com.serenegiant.usb;
+package com.serenegiant.usb_libuvccamera;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDevice;
@@ -30,7 +30,7 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
-import com.serenegiant.usb.USBMonitor.UsbControlBlock;
+import com.serenegiant.usb_libuvccamera.LibUVCCameraUSBMonitor.UsbControlBlock;
 
 import org.json.JSONArray;
 import org.json.JSONException;
