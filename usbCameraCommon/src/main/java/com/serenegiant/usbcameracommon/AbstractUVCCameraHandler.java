@@ -671,7 +671,6 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		}
 
 		public void handleCameraFocus() {
-			if (DEBUG) Log.v(TAG_THREAD, "handleStartPreview:");
 			if ((mUVCCamera == null) || !mIsPreviewing)
 				return;
 			try {
