@@ -40,7 +40,7 @@ public class SurfaceEncoder extends Encoder {
 	private static final int IFRAME_INTERVAL = 10;
 	private static final int FRAME_WIDTH = 640;
 	private static final int FRAME_HEIGHT = 480;
-	private static final int CAPTURE_FPS = 15;
+	private static final int CAPTURE_FPS = 30;
 	private static final int BIT_RATE = 1000000;
 
 	protected Surface mInputSurface;

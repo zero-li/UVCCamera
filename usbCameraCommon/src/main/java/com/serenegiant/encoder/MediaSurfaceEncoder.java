@@ -39,7 +39,7 @@ public class MediaSurfaceEncoder extends MediaEncoder implements IVideoEncoder {
 	private static final String MIME_TYPE = "video/avc";
 	// parameters for recording
 	private final int mWidth, mHeight;
-    private static final int FRAME_RATE = 15;
+    private static final int FRAME_RATE = 30;
     private static final float BPP = 0.50f;
 
     private Surface mSurface;
