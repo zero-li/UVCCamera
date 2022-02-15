@@ -40,6 +40,8 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
+import androidx.annotation.Nullable;
+
 import com.serenegiant.encoder.MediaAudioEncoder;
 import com.serenegiant.encoder.MediaEncoder;
 import com.serenegiant.encoder.MediaMuxerWrapper;
@@ -61,6 +63,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -203,10 +206,17 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		sendMessage(obtainMessage(MSG_CAPTURE_STILL, path));
 	}
 
-	public void startRecording() { startRecording(true); }
-	public void startRecording(boolean recordAudio) {
+	public void startRecording() { startRecording(true, null, null); }
+	public void startRecording(boolean recordAudio, @Nullable String dir, @Nullable String filename) {
 		checkReleased();
-		sendMessage(obtainMessage(MSG_CAPTURE_START, recordAudio));
+		sendMessage(obtainMessage(
+			MSG_CAPTURE_START,
+			new HashMap<String, Object>() {{
+				put("recordAudio", recordAudio);
+				put("dir", dir);
+				put("filename", filename);
+			}}
+		));
 	}
 
 	public void stopRecording() {
@@ -323,7 +333,8 @@ abstract class AbstractUVCCameraHandler extends Handler {
 			thread.handleCaptureStill((String)msg.obj);
 			break;
 		case MSG_CAPTURE_START:
-			thread.handleStartRecording((boolean)msg.obj);
+			HashMap<String, Object> params = (HashMap<String, Object>) msg.obj;
+			thread.handleStartRecording((boolean)params.get("recordAudio"), (String)params.get("dir"), (String)params.get("filename"));
 			break;
 		case MSG_CAPTURE_STOP:
 			thread.handleStopRecording();
@@ -554,11 +565,11 @@ abstract class AbstractUVCCameraHandler extends Handler {
 			}
 		}
 
-		public void handleStartRecording(boolean recordAudio) {
+		public void handleStartRecording(boolean recordAudio, @Nullable String dir, @Nullable String filename) {
 			if (DEBUG) Log.v(TAG_THREAD, "handleStartRecording:");
 			try {
 				if ((mUVCCamera == null) || (mMuxer != null)) return;
-				final MediaMuxerWrapper muxer = new MediaMuxerWrapper(".mp4");	// if you record audio only, ".m4a" is also OK.
+				final MediaMuxerWrapper muxer = new MediaMuxerWrapper(dir, filename, ".mp4");	// if you record audio only, ".m4a" is also OK.
 				MediaVideoBufferEncoder videoEncoder = null;
 				switch (mEncoderType) {
 				case 1:	// for video capturing using MediaVideoEncoder
