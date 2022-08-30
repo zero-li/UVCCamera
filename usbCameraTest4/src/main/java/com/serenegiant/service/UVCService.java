@@ -28,6 +28,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -126,7 +127,14 @@ public class UVCService extends BaseService {
 			.setWhen(System.currentTimeMillis())  // the time stamp
 			.setContentTitle(getText(R.string.app_name))  // the label of the entry
 			.setContentText(text)  // the contents of the entry
-			.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))  // The intent to send when the entry is clicked
+			.setContentIntent(
+					PendingIntent.getActivity(
+							this,
+							0,
+							new Intent(this, MainActivity.class),
+							(Build.VERSION.SDK_INT >= 31) ? PendingIntent.FLAG_MUTABLE : 0
+					)
+			) // The intent to send when the entry is clicked
 			.build();
 
 		startForeground(NOTIFICATION, notification);
