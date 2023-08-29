@@ -197,13 +197,13 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	private final OnDeviceConnectListener mOnDeviceConnectListener = new OnDeviceConnectListener() {
 		@Override
 		public void onAttach(final UsbDevice device) {
-			if (DEBUG) Log.v(TAG, "onAttach:" + device);
+			if (DEBUG) { Log.v(TAG, "onAttach:" + device); }
 			Toast.makeText(MainActivity.this, "USB_DEVICE_ATTACHED", Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
 		public void onConnect(final UsbDevice device, final UsbControlBlock ctrlBlock, final boolean createNew) {
-			if (DEBUG) Log.v(TAG, "onConnect:" + device);
+			if (DEBUG) { Log.v(TAG, "onConnect:" + device); }
 			if (!mHandlerL.isOpened()) {
 				mHandlerL.open(ctrlBlock);
 				final SurfaceTexture st = mUVCCameraViewL.getSurfaceTexture();
@@ -229,7 +229,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 		@Override
 		public void onDisconnect(final UsbDevice device, final UsbControlBlock ctrlBlock) {
-			if (DEBUG) Log.v(TAG, "onDisconnect:" + device);
+			if (DEBUG) { Log.v(TAG, "onDisconnect:" + device); }
 			if ((mHandlerL != null) && !mHandlerL.isEqual(device)) {
 				queueEvent(new Runnable() {
 					@Override
@@ -259,13 +259,13 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 		@Override
 		public void onDettach(final UsbDevice device) {
-			if (DEBUG) Log.v(TAG, "onDettach:" + device);
+			if (DEBUG) { Log.v(TAG, "onDettach:" + device); }
 			Toast.makeText(MainActivity.this, "USB_DEVICE_DETACHED", Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
 		public void onCancel(final UsbDevice device) {
-			if (DEBUG) Log.v(TAG, "onCancel:");
+			if (DEBUG) { Log.v(TAG, "onCancel:"); }
 		}
 	};
 

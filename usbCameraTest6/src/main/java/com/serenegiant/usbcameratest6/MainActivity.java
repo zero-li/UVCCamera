@@ -79,7 +79,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (DEBUG) Log.v(TAG, "onCreate:");
+		if (DEBUG) { Log.v(TAG, "onCreate:"); }
 		setContentView(R.layout.activity_main);
 		mCameraButton = (ToggleButton)findViewById(R.id.camera_button);
 		mCameraButton.setOnCheckedChangeListener(mOnCheckedChangeListener);
@@ -105,7 +105,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (DEBUG) Log.v(TAG, "onStart:");
+		if (DEBUG) { Log.v(TAG, "onStart:"); }
 		checkPermissionCamera();
 		synchronized (mSync) {
 			mUSBMonitor.register();
@@ -120,7 +120,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 	@Override
 	protected void onStop() {
-		if (DEBUG) Log.v(TAG, "onStop:");
+		if (DEBUG) { Log.v(TAG, "onStop:"); }
 		synchronized (mSync) {
 //			mCameraHandler.stopRecording();
 //			mCameraHandler.stopPreview();
@@ -139,7 +139,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 	@Override
 	public void onDestroy() {
-		if (DEBUG) Log.v(TAG, "onDestroy:");
+		if (DEBUG) { Log.v(TAG, "onDestroy:"); }
 		synchronized (mSync) {
 			if (mCameraHandler != null) {
 				mCameraHandler.release();
@@ -266,7 +266,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 		@Override
 		public void onConnect(final UsbDevice device, final UsbControlBlock ctrlBlock, final boolean createNew) {
-			if (DEBUG) Log.v(TAG, "onConnect:");
+			if (DEBUG) { Log.v(TAG, "onConnect:"); }
 			synchronized (mSync) {
 				if (mCameraHandler != null) {
 					mCameraHandler.open(ctrlBlock);
@@ -277,7 +277,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 		@Override
 		public void onDisconnect(final UsbDevice device, final UsbControlBlock ctrlBlock) {
-			if (DEBUG) Log.v(TAG, "onDisconnect:");
+			if (DEBUG) { Log.v(TAG, "onDisconnect:"); }
 			synchronized (mSync) {
 				if (mCameraHandler != null) {
 					queueEvent(new Runnable() {

@@ -43,6 +43,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'com.serenegiant.usbcameracommon'
+    ndkVersion ndkVersion
 }
 
 dependencies {

@@ -189,7 +189,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 				public void run() {
 					final UVCCamera camera = new UVCCamera();
 					camera.open(ctrlBlock);
-					if (DEBUG) Log.i(TAG, "supportedSize:" + camera.getSupportedSize());
+					if (DEBUG) { Log.i(TAG, "supportedSize:" + camera.getSupportedSize()); }
 					if (mPreviewSurface != null) {
 						mPreviewSurface.release();
 						mPreviewSurface = null;
@@ -317,7 +317,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	 * start capturing
 	 */
 	private final void startCapture() {
-		if (DEBUG) Log.v(TAG, "startCapture:");
+		if (DEBUG) { Log.v(TAG, "startCapture:"); }
 		if (mEncoder == null && (mCaptureState == CAPTURE_STOP)) {
 			mCaptureState = CAPTURE_PREPARE;
 			queueEvent(new Runnable() {
@@ -345,7 +345,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	 * stop capture if capturing
 	 */
 	private final void stopCapture() {
-		if (DEBUG) Log.v(TAG, "stopCapture:");
+		if (DEBUG) { Log.v(TAG, "stopCapture:"); }
 		queueEvent(new Runnable() {
 			@Override
 			public void run() {
@@ -368,7 +368,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
     private final EncodeListener mEncodeListener = new EncodeListener() {
 		@Override
 		public void onPreapared(final Encoder encoder) {
-			if (DEBUG) Log.v(TAG, "onPreapared:");
+			if (DEBUG) { Log.v(TAG, "onPreapared:"); }
 			synchronized (mSync) {
 				if (mUVCCamera != null) {
 					mUVCCamera.startCapture(((SurfaceEncoder)encoder).getInputSurface());
@@ -379,7 +379,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 		@Override
 		public void onRelease(final Encoder encoder) {
-			if (DEBUG) Log.v(TAG, "onRelease:");
+			if (DEBUG) { Log.v(TAG, "onRelease:"); }
 			synchronized (mSync) {
 				if (mUVCCamera != null) {
 					mUVCCamera.stopCapture();

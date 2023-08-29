@@ -372,14 +372,14 @@ public class UVCCameraTextureView extends AspectRatioTextureView    // API >= 14
 			}
 
 			public final RenderHandler getHandler() {
-				if (DEBUG) Log.v(TAG, "RenderThread#getHandler:");
+				if (DEBUG) { Log.v(TAG, "RenderThread#getHandler:"); }
 	            synchronized (mSync) {
 	                // create rendering thread
 	            	if (mHandler == null)
-	            	try {
-	            		mSync.wait();
-	            	} catch (final InterruptedException e) {
-	                }
+						try {
+							mSync.wait();
+						} catch (final InterruptedException e) {
+						}
 	            }
 	            return mHandler;
 			}
@@ -568,7 +568,7 @@ public class UVCCameraTextureView extends AspectRatioTextureView    // API >= 14
 			}
 
 	    	private final void release() {
-				if (DEBUG) Log.v(TAG, "RenderThread#release:");
+				if (DEBUG) { Log.v(TAG, "RenderThread#release:"); }
 	    		if (mDrawer != null) {
 	    			mDrawer.release();
 	    			mDrawer = null;

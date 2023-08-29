@@ -52,13 +52,13 @@ public class UVCService extends BaseService {
 	private NotificationManager mNotificationManager;
 
 	public UVCService() {
-		if (DEBUG) Log.d(TAG, "Constructor:");
+		if (DEBUG) { Log.d(TAG, "Constructor:"); }
 	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		if (DEBUG) Log.d(TAG, "onCreate:");
+		if (DEBUG) { Log.d(TAG, "onCreate:"); }
 		if (mUSBMonitor == null) {
 			mUSBMonitor = new LibUVCCameraUSBMonitor(getApplicationContext(), mOnDeviceConnectListener);
 			mUSBMonitor.register();
@@ -69,7 +69,7 @@ public class UVCService extends BaseService {
 
 	@Override
 	public void onDestroy() {
-		if (DEBUG) Log.d(TAG, "onDestroy:");
+		if (DEBUG) { Log.d(TAG, "onDestroy:"); }
 		if (mUSBMonitor != null) {
 			mUSBMonitor.unregister();
 			mUSBMonitor = null;
@@ -84,7 +84,7 @@ public class UVCService extends BaseService {
 
 	@Override
 	public IBinder onBind(final Intent intent) {
-		if (DEBUG) Log.d(TAG, "onBind:" + intent);
+		if (DEBUG) { Log.d(TAG, "onBind:" + intent); }
 		final String action = intent != null ? intent.getAction() : null;
 		if (IUVCService.class.getName().equals(action)) {
 			Log.i(TAG, "return mBasicBinder");
@@ -99,16 +99,16 @@ public class UVCService extends BaseService {
 
 	@Override
 	public void onRebind(final Intent intent) {
-		if (DEBUG) Log.d(TAG, "onRebind:" + intent);
+		if (DEBUG) { Log.d(TAG, "onRebind:" + intent); }
 	}
 
 	@Override
 	public boolean onUnbind(final Intent intent) {
-		if (DEBUG) Log.d(TAG, "onUnbind:" + intent);
+		if (DEBUG) { Log.d(TAG, "onUnbind:" + intent); }
 		if (checkReleaseService()) {
 			stopSelf();
 		}
-		if (DEBUG) Log.d(TAG, "onUnbind:finished");
+		if (DEBUG) { Log.d(TAG, "onUnbind:finished"); }
 		return true;
 	}
 
@@ -119,7 +119,7 @@ public class UVCService extends BaseService {
 	 * @param text
 	 */
 	private void showNotification(final CharSequence text) {
-		if (DEBUG) Log.v(TAG, "showNotification:" + text);
+		if (DEBUG) { Log.v(TAG, "showNotification:" + text); }
         // Set the info for the views that show in the notification panel.
         final Notification notification = new Notification.Builder(this)
 			.setSmallIcon(R.drawable.ic_launcher)  // the status icon
@@ -145,12 +145,12 @@ public class UVCService extends BaseService {
 	private final OnDeviceConnectListener mOnDeviceConnectListener = new OnDeviceConnectListener() {
 		@Override
 		public void onAttach(final UsbDevice device) {
-			if (DEBUG) Log.d(TAG, "OnDeviceConnectListener#onAttach:");
+			if (DEBUG) { Log.d(TAG, "OnDeviceConnectListener#onAttach:"); }
 		}
 
 		@Override
 		public void onConnect(final UsbDevice device, final UsbControlBlock ctrlBlock, final boolean createNew) {
-			if (DEBUG) Log.d(TAG, "OnDeviceConnectListener#onConnect:");
+			if (DEBUG) { Log.d(TAG, "OnDeviceConnectListener#onConnect:"); }
 
 			queueEvent(new Runnable() {
 				@Override
@@ -173,7 +173,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void onDisconnect(final UsbDevice device, final UsbControlBlock ctrlBlock) {
-			if (DEBUG) Log.d(TAG, "OnDeviceConnectListener#onDisconnect:");
+			if (DEBUG) { Log.d(TAG, "OnDeviceConnectListener#onDisconnect:"); }
 			queueEvent(new Runnable() {
 				@Override
 				public void run() {
@@ -184,12 +184,12 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void onDettach(final UsbDevice device) {
-			if (DEBUG) Log.d(TAG, "OnDeviceConnectListener#onDettach:");
+			if (DEBUG) { Log.d(TAG, "OnDeviceConnectListener#onDettach:"); }
 		}
 
 		@Override
 		public void onCancel(final UsbDevice device) {
-			if (DEBUG) Log.d(TAG, "OnDeviceConnectListener#onCancel:");
+			if (DEBUG) { Log.d(TAG, "OnDeviceConnectListener#onCancel:"); }
 			synchronized (sServiceSync) {
 				sServiceSync.notifyAll();
 			}
@@ -247,7 +247,7 @@ public class UVCService extends BaseService {
 		CameraServer server = null;
 		synchronized (sServiceSync) {
 			final int n = sCameraServers.size();
-			if (DEBUG) Log.d(TAG, "checkReleaseService:number of service=" + n);
+			if (DEBUG) { Log.d(TAG, "checkReleaseService:number of service=" + n); }
 			for (int i = 0; i < n; i++) {
 				server = sCameraServers.valueAt(i);
 				Log.i(TAG, "checkReleaseService:server=" + server + ",isConnected=" + (server != null && server.isConnected()));
@@ -266,7 +266,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public int select(final UsbDevice device, final IUVCServiceCallback callback) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#select:device=" + (device !=null ? device.getDeviceName() : null));
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#select:device=" + (device !=null ? device.getDeviceName() : null)); }
 			mCallback = callback;
 			final int serviceId = device.hashCode();
 			CameraServer server = null;
@@ -297,7 +297,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void release(final int serviceId) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#release:");
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#release:"); }
 			synchronized (sServiceSync) {
 				final CameraServer server = sCameraServers.get(serviceId);
 				if (server != null) {
@@ -323,7 +323,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void releaseAll() throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#releaseAll:");
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#releaseAll:"); }
 			CameraServer server;
 			synchronized (sServiceSync) {
 				final int n = sCameraServers.size();
@@ -339,7 +339,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void resize(final int serviceId, final int width, final int height) {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#resize:");
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#resize:"); }
 			final CameraServer server = getCameraServer(serviceId);
 			if (server == null) {
 				throw new IllegalArgumentException("invalid serviceId");
@@ -349,7 +349,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void connect(final int serviceId) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#connect:");
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#connect:"); }
 			final CameraServer server = getCameraServer(serviceId);
 			if (server == null) {
 				throw new IllegalArgumentException("invalid serviceId");
@@ -359,7 +359,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void disconnect(final int serviceId) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#disconnect:");
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#disconnect:"); }
 			final CameraServer server = getCameraServer(serviceId);
 			if (server == null) {
 				throw new IllegalArgumentException("invalid serviceId");
@@ -375,7 +375,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void addSurface(final int serviceId, final int id_surface, final Surface surface, final boolean isRecordable) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#addSurface:id=" + id_surface + ",surface=" + surface);
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#addSurface:id=" + id_surface + ",surface=" + surface); }
 			final CameraServer server = getCameraServer(serviceId);
 			if (server != null)
 				server.addSurface(id_surface, surface, isRecordable, null);
@@ -383,7 +383,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void removeSurface(final int serviceId, final int id_surface) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#removeSurface:id=" + id_surface);
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#removeSurface:id=" + id_surface); }
 			final CameraServer server = getCameraServer(serviceId);
 			if (server != null)
 				server.removeSurface(id_surface);
@@ -397,7 +397,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void startRecording(final int serviceId) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#startRecording:");
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#startRecording:"); }
 			final CameraServer server = getCameraServer(serviceId);
 			if ((server != null) && !server.isRecording()) {
 				server.startRecording();
@@ -406,7 +406,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void stopRecording(final int serviceId) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#stopRecording:");
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#stopRecording:"); }
 			final CameraServer server = getCameraServer(serviceId);
 			if ((server != null) && server.isRecording()) {
 				server.stopRecording();
@@ -415,7 +415,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void captureStillImage(final int serviceId, final String path) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mBasicBinder#captureStillImage:" + path);
+			if (DEBUG) { Log.d(TAG, "mBasicBinder#captureStillImage:" + path); }
 			final CameraServer server = getCameraServer(serviceId);
 			if (server != null) {
 				server.captureStill(path);
@@ -439,7 +439,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void addSurface(final int serviceID, final int id_surface, final Surface surface, final boolean isRecordable, final IUVCServiceOnFrameAvailable callback) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mSlaveBinder#addSurface:id=" + id_surface + ",surface=" + surface);
+			if (DEBUG) { Log.d(TAG, "mSlaveBinder#addSurface:id=" + id_surface + ",surface=" + surface); }
 			final CameraServer server = getCameraServer(serviceID);
 			if (server != null) {
 				server.addSurface(id_surface, surface, isRecordable, callback);
@@ -450,7 +450,7 @@ public class UVCService extends BaseService {
 
 		@Override
 		public void removeSurface(final int serviceID, final int id_surface) throws RemoteException {
-			if (DEBUG) Log.d(TAG, "mSlaveBinder#removeSurface:id=" + id_surface);
+			if (DEBUG) { Log.d(TAG, "mSlaveBinder#removeSurface:id=" + id_surface); }
 			final CameraServer server = getCameraServer(serviceID);
 			if (server != null) {
 				server.removeSurface(id_surface);

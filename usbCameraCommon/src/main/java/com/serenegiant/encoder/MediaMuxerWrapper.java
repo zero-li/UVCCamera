@@ -135,13 +135,13 @@ public class MediaMuxerWrapper {
 	 * @return true when muxer is ready to write
 	 */
 	/*package*/ synchronized boolean start() {
-		if (DEBUG) Log.v(TAG,  "start:");
+		if (DEBUG) { Log.v(TAG,  "start:"); }
 		mStatredCount++;
 		if ((mEncoderCount > 0) && (mStatredCount == mEncoderCount)) {
 			mMediaMuxer.start();
 			mIsStarted = true;
 			notifyAll();
-			if (DEBUG) Log.v(TAG,  "MediaMuxer started:");
+			if (DEBUG) { Log.v(TAG,  "MediaMuxer started:"); }
 		}
 		return mIsStarted;
 	}
@@ -150,7 +150,7 @@ public class MediaMuxerWrapper {
 	 * request stop recording from encoder when encoder received EOS
 	*/
 	/*package*/ synchronized void stop() {
-		if (DEBUG) Log.v(TAG,  "stop:mStatredCount=" + mStatredCount);
+		if (DEBUG) { Log.v(TAG,  "stop:mStatredCount=" + mStatredCount); }
 		mStatredCount--;
 		if ((mEncoderCount > 0) && (mStatredCount <= 0)) {
 			try {
@@ -159,7 +159,7 @@ public class MediaMuxerWrapper {
 				Log.w(TAG, e);
 			}
 			mIsStarted = false;
-			if (DEBUG) Log.v(TAG,  "MediaMuxer stopped:");
+			if (DEBUG) { Log.v(TAG,  "MediaMuxer stopped:"); }
 		}
 	}
 

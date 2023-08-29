@@ -113,7 +113,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (DEBUG) Log.v(TAG, "onCreate:");
+		if (DEBUG) { Log.v(TAG, "onCreate:"); }
 		setContentView(R.layout.activity_main);
 		mCameraButton = (ToggleButton)findViewById(R.id.camera_button);
 		mCameraButton.setOnCheckedChangeListener(mOnCheckedChangeListener);
@@ -146,7 +146,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (DEBUG) Log.v(TAG, "onStart:");
+		if (DEBUG) { Log.v(TAG, "onStart:"); }
 		checkPermissionCamera();
 		mUSBMonitor.register();
 		if (mUVCCameraView != null)
@@ -155,7 +155,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 	@Override
 	protected void onStop() {
-		if (DEBUG) Log.v(TAG, "onStop:");
+		if (DEBUG) { Log.v(TAG, "onStop:"); }
 		mCameraHandler.close();
 		if (mUVCCameraView != null)
 			mUVCCameraView.onPause();
@@ -165,7 +165,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 	@Override
 	public void onDestroy() {
-		if (DEBUG) Log.v(TAG, "onDestroy:");
+		if (DEBUG) { Log.v(TAG, "onDestroy:"); }
         if (mCameraHandler != null) {
 	        mCameraHandler.release();
 	        mCameraHandler = null;
@@ -294,7 +294,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 		@Override
 		public void onConnect(UsbDevice usbDevice, UsbControlBlock usbControlBlock, boolean b) {
-			if (DEBUG) Log.v(TAG, "onConnect:");
+			if (DEBUG) { Log.v(TAG, "onConnect:"); }
 			mCameraHandler.open(usbControlBlock);
 			startPreview();
 			updateItems();
@@ -302,7 +302,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 		@Override
 		public void onDisconnect(@NonNull UsbDevice usbDevice, UsbControlBlock usbControlBlock) {
-			if (DEBUG) Log.v(TAG, "onDisconnect:");
+			if (DEBUG) { Log.v(TAG, "onDisconnect:"); }
 			if (mCameraHandler != null) {
 				queueEvent(new Runnable() {
 					@Override
@@ -333,7 +333,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 	@Override
 	public void onDialogResult(boolean canceled) {
-		if (DEBUG) Log.v(TAG, "onDialogResult:canceled=" + canceled);
+		if (DEBUG) { Log.v(TAG, "onDialogResult:canceled=" + canceled); }
 		if (canceled) {
 			setCameraButton(false);
 		}
@@ -385,7 +385,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	 * @param mode
 	 */
 	private final void showSettings(final int mode) {
-		if (DEBUG) Log.v(TAG, String.format("showSettings:%08x", mode));
+		if (DEBUG) { Log.v(TAG, String.format("showSettings:%08x", mode)); }
 		hideSetting(false);
 		if (isActive()) {
 			switch (mode) {
@@ -478,7 +478,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 		mViewAnimationListener = new ViewAnimationHelper.ViewAnimationListener() {
 		@Override
 		public void onAnimationStart(@NonNull final Animator animator, @NonNull final View view, final int animationType) {
-//			if (DEBUG) Log.v(TAG, "onAnimationStart:");
+//			if (DEBUG) { Log.v(TAG, "onAnimationStart:"); }
 		}
 
 		@Override

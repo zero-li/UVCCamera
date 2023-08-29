@@ -69,7 +69,7 @@ public class MediaVideoBufferEncoder extends MediaEncoder implements IVideoEncod
 
 	@Override
 	protected void prepare() throws IOException {
-		if (DEBUG) Log.i(TAG, "prepare: ");
+		if (DEBUG) { Log.i(TAG, "prepare: "); }
         mTrackIndex = -1;
         mMuxerStarted = mIsEOS = false;
 
@@ -157,9 +157,9 @@ public class MediaVideoBufferEncoder extends MediaEncoder implements IVideoEncod
         for (int i = 0; i < caps.colorFormats.length; i++) {
         	colorFormat = caps.colorFormats[i];
             if (isRecognizedViewoFormat(colorFormat)) {
-            	if (result == 0)
-            		result = colorFormat;
-                break;
+				// if (result == 0) // FIXME: Why was this if check set? Lint gave error "Condition 'result == 0' is always 'true' "
+					result = colorFormat;
+				break;
             }
         }
         if (result == 0)

@@ -26,6 +26,7 @@ package com.serenegiant.common;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -268,6 +269,7 @@ public class BaseFragment extends Fragment
 	 * @return true 拥有对外部存储的写入权限
 	 */
 	protected boolean checkPermissionWriteExternalStorage() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) return true;
 		if (!PermissionCheck.hasWriteExternalStorage(getActivity())) {
 			MessageDialogFragmentV4.showDialog((FragmentActivity) getActivity(), REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE,
 				com.serenegiant.common.R.string.permission_title, com.serenegiant.common.R.string.permission_ext_storage_request,

@@ -177,6 +177,6 @@ public class UVCCameraTextureView2 extends TextureView	// API >= 14
 
 	@Override
 	public int getScaleMode() {
-		return 0;
+		return IScaledView.SCALE_MODE_KEEP_ASPECT;
 	}
 }

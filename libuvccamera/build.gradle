@@ -47,9 +47,10 @@ android {
 	sourceSets {
 		main {
 			jniLibs.srcDir 'src/main/libs'
-			jni.srcDirs = []
 		}
 	}
+	namespace 'com.serenegiant.uvccamera'
+	ndkVersion ndkVersion
 }
 
 tasks.withType(JavaCompile) {

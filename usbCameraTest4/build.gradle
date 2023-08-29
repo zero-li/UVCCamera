@@ -46,6 +46,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
         }
     }
+    namespace 'com.serenegiant.usbcameratest4'
+    buildFeatures {
+        aidl true
+    }
+	ndkVersion ndkVersion
 }
 
 dependencies {

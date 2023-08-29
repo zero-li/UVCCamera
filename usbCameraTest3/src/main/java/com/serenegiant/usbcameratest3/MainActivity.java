@@ -102,7 +102,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (DEBUG) Log.v(TAG, "onCreate:");
+		if (DEBUG) { Log.v(TAG, "onCreate:"); }
 		if (USE_SURFACE_ENCODER)
 			setContentView(R.layout.activity_main2);
 		else
@@ -124,7 +124,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (DEBUG) Log.v(TAG, "onStart:");
+		if (DEBUG) { Log.v(TAG, "onStart:"); }
 		checkPermissionCamera();
 		mUSBMonitor.register();
 		if (mUVCCameraView != null)
@@ -133,7 +133,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 	@Override
 	protected void onStop() {
-		if (DEBUG) Log.v(TAG, "onStop:");
+		if (DEBUG) { Log.v(TAG, "onStop:"); }
 		mCameraHandler.close();
 		if (mUVCCameraView != null)
 			mUVCCameraView.onPause();
@@ -143,7 +143,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 	@Override
 	public void onDestroy() {
-		if (DEBUG) Log.v(TAG, "onDestroy:");
+		if (DEBUG) { Log.v(TAG, "onDestroy:"); }
         if (mCameraHandler != null) {
 	        mCameraHandler.release();
 	        mCameraHandler = null;
@@ -256,14 +256,14 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 		@Override
 		public void onConnect(final UsbDevice device, final UsbControlBlock ctrlBlock, final boolean createNew) {
-			if (DEBUG) Log.v(TAG, "onConnect:");
+			if (DEBUG) { Log.v(TAG, "onConnect:"); }
 			mCameraHandler.open(ctrlBlock);
 			startPreview();
 		}
 
 		@Override
 		public void onDisconnect(final UsbDevice device, final UsbControlBlock ctrlBlock) {
-			if (DEBUG) Log.v(TAG, "onDisconnect:");
+			if (DEBUG) { Log.v(TAG, "onDisconnect:"); }
 			if (mCameraHandler != null) {
 				queueEvent(new Runnable() {
 					@Override
@@ -296,7 +296,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 	@Override
 	public void onDialogResult(boolean canceled) {
-		if (DEBUG) Log.v(TAG, "onDialogResult:canceled=" + canceled);
+		if (DEBUG) { Log.v(TAG, "onDialogResult:canceled=" + canceled); }
 		if (canceled) {
 			setCameraButton(false);
 		}
