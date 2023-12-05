@@ -50,6 +50,8 @@ UVCPreview::UVCPreview(uvc_device_handle_t *devh)
 :	mPreviewWindow(NULL),
 	mCaptureWindow(NULL),
 	mDeviceHandle(devh),
+	preview_thread(NULL),
+	capture_thread(NULL),
 	requestWidth(DEFAULT_PREVIEW_WIDTH),
 	requestHeight(DEFAULT_PREVIEW_HEIGHT),
 	requestMinFps(DEFAULT_PREVIEW_FPS_MIN),
@@ -419,10 +421,10 @@ int UVCPreview::stopPreview() {
 		mIsRunning = false;
 		pthread_cond_signal(&preview_sync);
 		pthread_cond_signal(&capture_sync);
-		if (pthread_join(capture_thread, NULL) != EXIT_SUCCESS) {
+		if (capture_thread!=NULL && pthread_join(capture_thread, NULL) != EXIT_SUCCESS) {
 			LOGW("UVCPreview::terminate capture thread: pthread_join failed");
 		}
-		if (pthread_join(preview_thread, NULL) != EXIT_SUCCESS) {
+		if (preview_thread!=NULL && pthread_join(preview_thread, NULL) != EXIT_SUCCESS) {
 			LOGW("UVCPreview::terminate preview thread: pthread_join failed");
 		}
 		clearDisplay();
