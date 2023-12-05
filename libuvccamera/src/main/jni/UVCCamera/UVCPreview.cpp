@@ -237,8 +237,11 @@ int UVCPreview::setPreviewDisplay(ANativeWindow *preview_window) {
 				ANativeWindow_release(mPreviewWindow);
 			mPreviewWindow = preview_window;
 			if (LIKELY(mPreviewWindow)) {
-				ANativeWindow_setBuffersGeometry(mPreviewWindow,
-					frameWidth, frameHeight, previewFormat);
+				if(rotateImage && (frameRotationAngle==90 || frameRotationAngle==270)){
+					ANativeWindow_setBuffersGeometry(mPreviewWindow, frameHeight, frameWidth, previewFormat);
+				}else{
+					ANativeWindow_setBuffersGeometry(mPreviewWindow, frameWidth, frameHeight, previewFormat);
+				}
 			}
 		}
 	}
@@ -298,36 +301,40 @@ void UVCPreview::callbackPixelFormatChanged() {
 	const size_t sz = requestWidth * requestHeight;
 	// 帧回调像素格式
 	switch (mPixelFormat) {
-	  case PIXEL_FORMAT_RAW:
-		LOGI("PIXEL_FORMAT_RAW:");
-		callbackPixelBytes = sz * 2;
-		break;
-	  case PIXEL_FORMAT_YUV:
-		LOGI("PIXEL_FORMAT_YUV:");
-		callbackPixelBytes = sz * 2;
-		break;
-	  case PIXEL_FORMAT_RGB565:
-		LOGI("PIXEL_FORMAT_RGB565:");
-		mFrameCallbackFunc = uvc_any2rgb565;
-		callbackPixelBytes = sz * 2;
-		break;
-	  case PIXEL_FORMAT_RGBX:
-		LOGI("PIXEL_FORMAT_RGBX:");
-		mFrameCallbackFunc = uvc_any2rgbx;
-		callbackPixelBytes = sz * 4;
-		break;
-	  case PIXEL_FORMAT_YUV20SP:
-		LOGI("PIXEL_FORMAT_YUV20SP:");
-		// NV12: YYYYYYYY UVUV   => YUV420SP
-		mFrameCallbackFunc = uvc_yuyv2yuv420SP;
-		callbackPixelBytes = (sz * 3) / 2;
-		break;
-	  case PIXEL_FORMAT_NV21:
-		LOGI("PIXEL_FORMAT_NV21:");
-	    // NV21: YYYYYYYY VUVU   => YUV420SP
-		mFrameCallbackFunc = uvc_yuyv2iyuv420SP;
-		callbackPixelBytes = (sz * 3) / 2;
-		break;
+		case PIXEL_FORMAT_RAW:
+			LOGI("PIXEL_FORMAT_RAW:");
+			// callbackPixelBytes = sz * 2;
+			callbackPixelBytes = sz << 1;
+			break;
+		case PIXEL_FORMAT_YUV:
+			LOGI("PIXEL_FORMAT_YUV:");
+			// callbackPixelBytes = sz * 2;
+			callbackPixelBytes = sz << 1;
+			break;
+		case PIXEL_FORMAT_RGB565:
+			LOGI("PIXEL_FORMAT_RGB565:");
+			mFrameCallbackFunc = uvc_any2rgb565;
+			// callbackPixelBytes = sz * 2;
+			callbackPixelBytes = sz << 1;
+			break;
+		case PIXEL_FORMAT_RGBX:
+			LOGI("PIXEL_FORMAT_RGBX:");
+			mFrameCallbackFunc = uvc_any2rgbx;
+			// callbackPixelBytes = sz * 4;
+			callbackPixelBytes = sz << 2;
+			break;
+		case PIXEL_FORMAT_YUV20SP:
+			LOGI("PIXEL_FORMAT_YUV20SP:");
+			// NV12: YYYYYYYY UVUV   => YUV420SP
+			mFrameCallbackFunc = uvc_yuyv2yuv420SP;
+			callbackPixelBytes = (sz * 3) / 2;
+			break;
+		case PIXEL_FORMAT_NV21:
+			LOGI("PIXEL_FORMAT_NV21:");
+			// NV21: YYYYYYYY VUVU   => YUV420SP
+			mFrameCallbackFunc = uvc_yuyv2iyuv420SP;
+			callbackPixelBytes = (sz * 3) / 2;
+			break;
 	}
 }
 
@@ -552,17 +559,20 @@ int UVCPreview::prepare_preview(uvc_stream_ctrl_t *ctrl) {
 		if (LIKELY(!result)) {
 			frameWidth = frame_desc->wWidth;
 			frameHeight = frame_desc->wHeight;
-			LOGI("frameSize=(%d,%d)@%s", frameWidth, frameHeight, (!requestMode ? "YUYV" : "MJPEG"));
 			pthread_mutex_lock(&preview_mutex);
 			if (LIKELY(mPreviewWindow)) {
-				ANativeWindow_setBuffersGeometry(mPreviewWindow,
-					frameWidth, frameHeight, previewFormat);
+				if(rotateImage && (frameRotationAngle==90 || frameRotationAngle==270)){
+					ANativeWindow_setBuffersGeometry(mPreviewWindow, frameHeight, frameWidth, previewFormat);
+				}else{
+					ANativeWindow_setBuffersGeometry(mPreviewWindow, frameWidth, frameHeight, previewFormat);
+				}
 			}
 			pthread_mutex_unlock(&preview_mutex);
 		} else {
 			frameWidth = requestWidth;
 			frameHeight = requestHeight;
 		}
+		LOGI("frameSize=(%d,%d)@%s frameRotationAngle=%d", frameWidth, frameHeight, (!requestMode ? "YUYV" : "MJPEG"), frameRotationAngle);
 		frameMode = requestMode;
 		frameBytes = frameWidth * frameHeight * (!requestMode ? 2 : 4);
 		previewBytes = frameWidth * frameHeight * PREVIEW_PIXEL_BYTES;
@@ -570,6 +580,29 @@ int UVCPreview::prepare_preview(uvc_stream_ctrl_t *ctrl) {
 		LOGE("could not negotiate with camera:err=%d", result);
 	}
 	RETURN(result, int);
+}
+
+// 处理图像帧
+void UVCPreview::handleFrame(uvc_frame_t *frame) {
+	if(rotateImage){
+		if(frameRotationAngle==90){
+			rotateImage->rotate_yuyv_90(frame);
+		}else if(frameRotationAngle==180){
+			rotateImage->rotate_yuyv_180(frame);
+		}else if(frameRotationAngle==270){
+			rotateImage->rotate_yuyv_270(frame);
+		}
+
+		// 需要水平镜像
+		if(frameHorizontalMirror){
+			rotateImage->horizontal_mirror_yuyv(frame);
+		}
+
+		// 需要垂直镜像
+		if(frameVerticalMirror){
+			rotateImage->vertical_mirror_yuyv(frame);
+		}
+	}
 }
 
 // 执行预览
@@ -596,31 +629,16 @@ void UVCPreview::do_preview(uvc_stream_ctrl_t *ctrl) {
 			    // 等待预览帧
 				frame_mjpeg = waitPreviewFrame();
 				if (LIKELY(frame_mjpeg)) {
-				    // 从帧池中获取帧
-					frame = get_frame(frame_mjpeg->width * frame_mjpeg->height * 2);
+					// 从帧池中获取帧
+					// frame = get_frame(frame_mjpeg->width * frame_mjpeg->height * 2);
+					frame = get_frame(frame_mjpeg->width * frame_mjpeg->height << 1);
 					// 将MJPEG转为yuyv
 					result = uvc_mjpeg2yuyv(frame_mjpeg, frame);   // MJPEG => yuyv
 					// 放回帧池
 					recycle_frame(frame_mjpeg);
 					if (LIKELY(!result)) {
-                        // 需要旋转图像帧
-                        if(rotateImage){
-                            if(frameRotationAngle==90){
-                                rotateImage->rotate_yuyv_90(frame);
-                            }else if(frameRotationAngle==180){
-                                rotateImage->rotate_yuyv_180(frame);
-                            }else if(frameRotationAngle==270){
-                                rotateImage->rotate_yuyv_270(frame);
-                            }
-                            // 需要水平镜像
-                            if(frameHorizontalMirror){
-                                rotateImage->horizontal_mirror_yuyv(frame);
-                            }
-                            // 需要垂直镜像
-                            if(frameVerticalMirror){
-                                rotateImage->vertical_mirror_yuyv(frame);
-                            }
-                        }
+						// 处理图像帧
+						handleFrame(frame);
 
 					    // 画预览帧
 						frame = draw_preview_one(frame, &mPreviewWindow, uvc_any2rgbx, 4);
@@ -638,25 +656,10 @@ void UVCPreview::do_preview(uvc_stream_ctrl_t *ctrl) {
 			    // 等待预览帧
 				frame = waitPreviewFrame();
 				if (LIKELY(frame)) {
-				    // 需要旋转图像帧
-				    if(rotateImage){
-                        if(frameRotationAngle==90){
-                            rotateImage->rotate_yuyv_90(frame);
-                        }else if(frameRotationAngle==180){
-                            rotateImage->rotate_yuyv_180(frame);
-                        }else if(frameRotationAngle==270){
-                            rotateImage->rotate_yuyv_270(frame);
-                        }
-                        // 需要水平镜像
-                        if(frameHorizontalMirror){
-                            rotateImage->horizontal_mirror_yuyv(frame);
-                        }
-                        // 需要垂直镜像
-                        if(frameVerticalMirror){
-                            rotateImage->vertical_mirror_yuyv(frame);
-                        }
-				    }
-				    // 画预览帧
+					// 处理图像帧
+					handleFrame(frame);
+
+					// 画预览帧
 					frame = draw_preview_one(frame, &mPreviewWindow, uvc_any2rgbx, 4);
 					// 设置抓拍帧
 					addCaptureFrame(frame);
@@ -705,11 +708,11 @@ static void copyFrame(const uint8_t *src, uint8_t *dest, const int width, int he
 	}
 }
 
-
 // transfer specific frame data to the Surface(ANativeWindow)
 // 将特定的帧数据传输到Surface（ANativeWindow）
 int copyToSurface(uvc_frame_t *frame, ANativeWindow **window) {
 	// ENTER();
+	// frame目前图像颜色格式都是RGBA
 	int result = 0;
 	if (LIKELY(*window)) {
 		ANativeWindow_Buffer buffer;
@@ -759,7 +762,7 @@ uvc_frame_t *UVCPreview::draw_preview_one(uvc_frame_t *frame, ANativeWindow **wi
 		    // 从帧池中获取帧
 			converted = get_frame(frame->width * frame->height * pixcelBytes);
 			if LIKELY(converted) {
-			    // 转换帧
+				// 转换帧 按照转换函数转换
 				b = convert_func(frame, converted);
 				if (!b) {
 					pthread_mutex_lock(&preview_mutex);
@@ -962,18 +965,18 @@ void UVCPreview::do_capture_surface(JNIEnv *env) {
 			// 帧数据始终为YUYV格式。
 			if LIKELY(isCapturing()) {
 				if (LIKELY(mCaptureWindow)) {
-                    if (UNLIKELY(!converted)) {
-                        // 从帧池中获取帧
-                        converted = get_frame(previewBytes);
-                    }
-                    if (LIKELY(converted)) {
-                        // 转为RGBA8888
-                        int b = uvc_any2rgbx(frame, converted);
-                        if (!b) {
-                            // 复制到Surface
-                            copyToSurface(converted, &mCaptureWindow);
-                        }
-                    }
+					if (UNLIKELY(!converted)) {
+						// 从帧池中获取帧
+						converted = get_frame(previewBytes);
+					}
+					if (LIKELY(converted)) {
+						// 转为RGBA8888
+						int b = uvc_any2rgbx(frame, converted);
+						if (!b) {
+							// 复制到Surface  图片颜色格式为RGBA
+							copyToSurface(converted, &mCaptureWindow);
+						}
+					}
 				}
 			}
 			// 回调 IFrameCallback#onFrame
@@ -981,7 +984,7 @@ void UVCPreview::do_capture_surface(JNIEnv *env) {
 		}
 	}
 	if (converted) {
-	    // 放回帧池
+		// 放回帧池
 		recycle_frame(converted);
 	}
 	if (mCaptureWindow) {

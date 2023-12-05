@@ -69,7 +69,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public abstract class AbstractUVCCameraHandler extends Handler {
+abstract class AbstractUVCCameraHandler extends Handler {
 	private static final boolean DEBUG = true;	// TODO set false on release
 	private static final String TAG = "AbsUVCCameraHandler";
 

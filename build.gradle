@@ -1,8 +1,22 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-	id 'com.android.application' version '7.2.0' apply false
-	id 'com.android.library' version '7.2.0' apply false
-//	id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
+buildscript {
+    repositories {
+//		google()
+		maven { url 'https://maven.google.com' }
+        jcenter()
+    }
+    dependencies {
+		classpath 'com.android.tools.build:gradle:8.1.0'
+    }
+}
+
+allprojects {
+    repositories {
+//    	google()
+		maven { url 'https://maven.google.com' }
+		jcenter()
+		maven { url 'https://raw.github.com/saki4510t/libcommon/master/repository/' }
+    }
 }
 
 task clean(type: Delete) {
@@ -18,5 +32,5 @@ ext {
 	versionNameString = '1.0.0'
 	javaSourceCompatibility = JavaVersion.VERSION_1_8
 	javaTargetCompatibility = JavaVersion.VERSION_1_8
-	ndkVersion = '23.1.7779620'
+	ndkVersion = '25.2.9519653'
 }
