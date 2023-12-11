@@ -18,7 +18,8 @@ allprojects {
     	google()
 //		maven { url 'https://maven.google.com' }
 		jcenter()
-		maven { url 'https://raw.github.com/saki4510t/libcommon/master/repository/' }
+//		maven { url 'https://raw.github.com/saki4510t/libcommon/master/repository/' }
+		maven { url 'https://gitee.com/liuchaoya/libcommon/raw/master/repository/' }
 		maven { url 'https://repo1.maven.org/maven2' }
 		maven { url 'https://maven.aliyun.com/repository/public/' }
 	}
